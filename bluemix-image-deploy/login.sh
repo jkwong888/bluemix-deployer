@@ -6,4 +6,7 @@ fi
 
 bx login -a ${BX_API_ENDPOINT} -s ${BX_SPACE}
 
+# initialize docker using container registry secret
+bx cr login
+
 exec "$@"

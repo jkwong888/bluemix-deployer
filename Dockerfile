@@ -12,9 +12,8 @@ RUN Bluemix_CLI/install_bluemix_cli
 RUN bx --version
 RUN bx update
 
-RUN bx plugin install container-registry -r Bluemix
-
 ADD login.sh /
+RUN chmod a+x /login.sh
 
 ENTRYPOINT /login.sh
 
