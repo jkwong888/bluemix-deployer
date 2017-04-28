@@ -14,5 +14,9 @@ RUN bx update
 
 RUN bx plugin install container-registry -r Bluemix
 
+ADD login.sh
+
+ENTRYPOINT login.sh
+
 # hangs forever
 CMD [ "/bin/cat" ]
