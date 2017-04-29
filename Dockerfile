@@ -12,7 +12,9 @@ RUN Bluemix_CLI/install_bluemix_cli
 RUN bx --version
 RUN bx update
 
+ADD bx_login.sh /
 ADD login.sh /
+RUN chmod a+x /bx_login.sh
 RUN chmod a+x /login.sh
 
 ENTRYPOINT /login.sh
