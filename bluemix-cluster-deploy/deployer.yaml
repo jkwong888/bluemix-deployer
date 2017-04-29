@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: jkwong-deployer
+spec:
+  containers:
+    - name: jkwong-cluster-deployer
+      image: jkwong/bluemix-cluster-deployer
+      imagePullPolicy: Always
+      command: ["/bin/cat"]
+      tty: true
+      stdin: true
+      volumeMounts:
+        - mountPath: "/var/run/docker.sock"
+          name: docker-socket
+          readOnly: false
+        - mountPath: "/var/run/secrets/bluemix-api-key"
+          name: bluemix-api-key
+      env:
+      - name: BX_SPACE
+        valueFrom:
+          configMapKeyRef:
+            name: bluemix-target
+            key: bluemix-space
+      - name: BX_API_ENDPOINT
+        valueFrom:
+          configMapKeyRef:
+            name: bluemix-target
+            key: bluemix-api-endpoint
+  volumes:
+    - name: docker-socket
+      hostPath:
+          path: /var/run/docker.sock
+    - name: bluemix-api-key
+      secret:
+          secretName: bluemix-api-key
+
