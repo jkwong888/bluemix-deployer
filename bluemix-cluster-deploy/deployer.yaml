@@ -4,12 +4,13 @@ metadata:
   name: jkwong-deployer
 spec:
   containers:
-    - name: jkwong-cluster-deployer
-      image: jkwong/bluemix-cluster-deployer
+    - name: jkwong-deployer
+      image: lachlanevenson/k8s-kubectl
       imagePullPolicy: Always
-      command: ["/bin/cat"]
       tty: true
       stdin: true
+      command: [ "/bin/bash", "-c" ]
+      args: [ "kubectl get secrets {{ .Values.hs256-key.secretName}} ||  kubectl create secret generic {{ .Values.hs256-key.secretName }} --from-literal=key=`cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-zA-Z0-9' | fold -w 256 | head -n 1 | xargs echo -n` "]
       volumeMounts:
         - mountPath: "/var/run/docker.sock"
           name: docker-socket

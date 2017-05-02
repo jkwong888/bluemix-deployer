@@ -1,23 +1,26 @@
-FROM debian:stable
+#FROM debian:stable
+FROM nimmis/alpine-glibc:latest
 
-RUN apt update
-RUN apt install -y ca-certificates
 
-ADD http://public.dhe.ibm.com/cloud/bluemix/cli/bluemix-cli/Bluemix_CLI_0.5.2_amd64.tar.gz /tmp
+
+ENV BX_SPACE ""
+ENV BX_API_ENDPOINT api.ng.bluemix.net
+ENV BLUEMIX_API_KEY ""
+
+#RUN apk update
+RUN apk add --no-cache bash ca-certificates curl
+RUN update-ca-certificates
 
 WORKDIR /tmp
-RUN tar zxvf Bluemix_CLI_0.5.2_amd64.tar.gz
-RUN Bluemix_CLI/install_bluemix_cli
+RUN curl -o /tmp/Bluemix_CLI.tar.gz http://public.dhe.ibm.com/cloud/bluemix/cli/bluemix-cli/Bluemix_CLI_0.5.2_amd64.tar.gz && \
+  tar zxvf Bluemix_CLI.tar.gz && \
+  Bluemix_CLI/install_bluemix_cli && \
+  rm -rf /tmp/Bluemix_CLI 
+WORKDIR /
 
-RUN bx --version
 RUN bx update
 
-ADD bx_login.sh /
-ADD login.sh /
-RUN chmod a+x /bx_login.sh
-RUN chmod a+x /login.sh
+RUN mkdir /scripts
+ADD /scripts/ /scripts
 
-ENTRYPOINT /login.sh
-
-# hangs forever
-CMD [ "/bin/cat" ]
+RUN chmod a+x /scripts/*
